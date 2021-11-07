@@ -21,9 +21,6 @@ import LocalDb from './LocalDb';
 import DeepLinkConverter from './DeepLinkConverter';
 import AppConfig from './AppConfig';
 
-const Moralis = require('moralis');
-const serverUrl = "https://kyyslozorkna.usemoralis.com:2053/server";
-const appId = "eKUfnm9MJRGaWSNh8mjnFpFz5FrPYYGB7xS4J7nC";
 export default abstract class AppBootstrapper {
     constructor() {
         RX.App.initialize(__DEV__, __DEV__);
@@ -48,7 +45,6 @@ export default abstract class AppBootstrapper {
 
     private _startCriticalServices(): SyncTasks.Promise<void> {
         const servicesToStart: Service[] = [TodosStore];
-        this.winnersSubscription()
         if (AppConfig.getPlatformType() === 'web') {
             servicesToStart.push(PageUrlService);
         }
@@ -65,43 +61,7 @@ export default abstract class AppBootstrapper {
         );
     }
 
-    winnersSubscription = async () => {
 
-        const query = new Moralis.Query('Winners');
-        let subscription = await query.subscribe()
-        subscription.on('create', this.onWinnerCreated)
-    }
-
-
-    onWinnerCreated = async (item: any) => {
-        let user = await Moralis.User.current();
-        console.log(item.attributes)
-        if (user) {
-            let win = {
-                token_address: item.attributes.token_address,
-                token_id: item.attributes.token_id,
-                amount: item.attributes.amount,
-                owner_of: item.attributes.owner_of,
-                block_number: item.attributes.block_number,
-                block_number_minted: item.attributes.block_number_minted,
-                contract_type: item.attributes.contract_type,
-                token_uri: item.attributes.token_uri,
-                metadata: item.attributes.metadata,
-                synced_at: item.attributes.synced_at,
-                name: item.attributes.name,
-                symbol: item.attributes.symbol
-            }
-            TodosStore.addWinner(win)
-            NavContextStore.navigateToTodoList()
-
-
-
-
-
-
-        }
-
-    }
     private _onLayoutRootView = (e: RX.Types.ViewOnLayoutEvent) => {
         const { width, height } = e;
         ResponsiveWidthStore.putWindowSize(width, height);

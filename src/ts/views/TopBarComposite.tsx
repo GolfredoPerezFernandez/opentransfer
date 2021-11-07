@@ -10,7 +10,6 @@ import ImageSource from 'modules/images';
 import * as RX from 'reactxp';
 import { ComponentBase } from 'resub';
 
-import HoverButton from '../controls/HoverButton';
 import NavContextStore from '../stores/NavContextStore';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
 
@@ -122,55 +121,7 @@ export default class TopBarComposite extends ComponentBase<TopBarCompositeProps,
     }
 
 
-    private async onLogOut() {
 
-
-
-        await Moralis.User.logOut();
-        CurrentUserStore.setLogin(false)
-        CurrentUserStore.setUser('', '', '', '', '', '', '')
-
-        NavContextStore.navigateToTodoList()
-
-    }
-    private _onPressBack = (e: RX.Types.SyntheticEvent) => {
-        e.stopPropagation();
-
-        if (this.props.onBack) {
-            this.props.onBack();
-        }
-    };
-    _onPressTodo = async (e: RX.Types.SyntheticEvent) => {
-        e.stopPropagation()
-
-        await Moralis.enableWeb3()
-
-
-
-        await Moralis.switchNetwork('0x4');
-        return await Moralis.Web3.authenticate().then(async (user: any) => {
-            let username = user.get('username')
-            let createdAt = user.get('createdAt')
-            let sessionToken = user.get('sessionToken')
-            let updatedAt = user.get('updatedAt')
-            let address = user.get('ethAddress')
-
-
-            let avatar = user.get('avatar')
-
-            console.log('EXITO ' + address)
-            await CurrentUserStore.setLogin(true)
-            if (avatar === undefined) {
-
-                await CurrentUserStore.setUser(username, '', createdAt, sessionToken, updatedAt, '', address)
-
-            } else {
-
-                await CurrentUserStore.setUser(username, '', createdAt, sessionToken, updatedAt, avatar, address)
-
-            }
-        })
-    };
 
     private _onPressLogo = (e: RX.Types.SyntheticEvent) => {
         e.stopPropagation();
