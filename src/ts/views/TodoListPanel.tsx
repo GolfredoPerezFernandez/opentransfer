@@ -266,6 +266,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
     private _onPressBronze = async () => {
         const options3 = { address: "0x88B48F654c30e99bc2e4A1559b4Dcf1aD93FA656", token_id: "16923634234309235305936278977612378847065311654836719990863808851027999851496", chain: "rinkeby" };
         CurrentUserStore.setLoading(true)
+        await Moralis.enableWeb3()
         let user = await Moralis.User.current();
 
 
@@ -374,13 +375,24 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
             return
 
 
-        }
+        } else {
+            try {
+                return await Moralis.Web3.authenticate().then(async (user: any) => {
+
+                    CurrentUserStore.setLoading(false)
+                })
+            } catch {
 
 
-        CurrentUserStore.setLoading(false)
-        return
+                CurrentUserStore.setLoading(false)
 
-    };
+            }
+
+
+            CurrentUserStore.setLoading(false)
+            return
+
+        };
     private _onPressSilver = async () => {
         const options3 = { address: "0x88B48F654c30e99bc2e4A1559b4Dcf1aD93FA656", token_id: "16923634234309235305936278977612378847065311654836719990863808852127511479272", chain: "rinkeby" };
         CurrentUserStore.setLoading(true)
