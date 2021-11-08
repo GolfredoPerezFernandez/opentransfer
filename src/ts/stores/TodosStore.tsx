@@ -34,15 +34,7 @@ class TodosStore extends StoreBase {
 
 
     startup() {
-        LocalDb.getAllDBGold().then((todos: Owner[]) => {
-            this._ownersDBGold = todos;
-        })
-        LocalDb.getAllDBBronze().then((todos: Owner[]) => {
-            this._ownersDBBronze = todos;
-        })
-        LocalDb.getAllDBSilver().then((todos: Owner[]) => {
-            this._ownersDBSilver = todos;
-        });
+
 
         LocalDb.getAllWinnersGold().then((todos: Winner[]) => {
             this._winnersGold = todos;
@@ -52,6 +44,16 @@ class TodosStore extends StoreBase {
         })
         LocalDb.getAllWinnersSilver().then((todos: Winner[]) => {
             this._winnersSilver = todos;
+        });
+
+        LocalDb.getAllDBGold().then((todos: Owner[]) => {
+            this._ownersDBGold = todos;
+        })
+        LocalDb.getAllDBBronze().then((todos: Owner[]) => {
+            this._ownersDBBronze = todos;
+        })
+        LocalDb.getAllDBSilver().then((todos: Owner[]) => {
+            this._ownersDBSilver = todos;
         });
         return LocalDb.getAllGold().then((todos: Owner[]) => {
             this._ownersGold = todos;

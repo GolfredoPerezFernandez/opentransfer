@@ -18,12 +18,15 @@ import TodoListPanel from './TodoListPanel';
 import TodoListPanel2 from './TodoListPanel2';
 import ViewTodoPanel from './ViewTodoPanel';
 import ViewTodoPanel2 from './ViewTodoPanel2';
+import HomePanel from './HomePanel';
+import CurrentUserStore from '../stores/CurrentUserStore';
 
 export interface TodoCompositeViewProps extends RX.CommonProps {
     navContext: NavModels.TodoRootNavContext;
 }
 
 interface TodoCompositeViewState {
+    isLogin: boolean
 }
 
 const _styles = {
@@ -44,28 +47,32 @@ const _styles = {
 };
 export default class TodoCompositeView extends ComponentBase<TodoCompositeViewProps, TodoCompositeViewState> {
     protected _buildState(props: TodoCompositeViewProps, initState: boolean): Partial<TodoCompositeViewState> | undefined {
-        return undefined;
+        const partialState: Partial<TodoCompositeViewState> = {
+            isLogin: CurrentUserStore.getLogin(),
+        };
+        return partialState;
     }
     render(): JSX.Element | null {
         return (
             <RX.View style={_styles.viewContainer}>
-                <RX.View style={_styles.leftPanelContainer}>
-                    <TodoListPanel
-                        selectedTodoId={this.props.navContext.todoList.selectedTodoId || ''}
-                        onSelect={this._onSelectTodo}
-                        onCreateNew={this._onCreateNewTodo}
-                    />
-                </RX.View>
+                {this.state.isLogin == true ?
+                    <RX.View style={_styles.leftPanelContainer}>
+                        <TodoListPanel
+                            selectedTodoId={this.props.navContext.todoList.selectedTodoId || ''}
+                            onSelect={this._onSelectTodo}
+                            onCreateNew={this._onCreateNewTodo}
+                        />
+                    </RX.View> : null}
                 <RX.View style={_styles.rightPanelContainer}>
                     {this._renderRightPanel()}
                 </RX.View>
-                <RX.View style={_styles.leftPanelContainer}>
+                {this.state.isLogin == true ? <RX.View style={_styles.leftPanelContainer}>
                     <TodoListPanel2
                         selectedTodoId={this.props.navContext.todoList.selectedTodoId2 || ''}
                         onSelect={this._onSelectTodo2}
                         onCreateNew={this._onCreateNewTodo}
                     />
-                </RX.View>
+                </RX.View> : null}
             </RX.View>
         );
     }
@@ -84,7 +91,7 @@ export default class TodoCompositeView extends ComponentBase<TodoCompositeViewPr
                 <ViewTodoPanel2 todoId={this.props.navContext.todoList.selectedTodoId2} />
             );
         } else {
-            return null;
+            return <HomePanel />;
         }
     }
 

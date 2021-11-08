@@ -262,6 +262,14 @@ export const CreateTodoHook = ({
       )} style={{ root: [{ marginLeft: 15, height: 35 }], content: [{ width: 200, borderRadius: 11, justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }], label: _styles.label }
       } elevation={4} variant={"outlined"} label="Get Order" />
 
+      <RX.View style={{ width: 10 }}>
+
+      </RX.View>
+      <RX.View style={{ width: 10 }}></RX.View>
+
+    </RX.View>
+    <RX.View style={{ flex: 1, height: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+
 
       <UI.Button onPress={() => toBuyOrder()} iconSlot={(iconStyle: any) => (
         <BsFillCollectionFill color={'#FF296D'} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 14, height: 14 }} />
@@ -280,7 +288,6 @@ export const CreateTodoHook = ({
       <RX.View style={{ width: 10 }}></RX.View>
 
     </RX.View>
-
     <RX.Text style={[_styles.text1, {}]} >
       {'NFT Token Address'}
     </RX.Text>

@@ -59,6 +59,7 @@ export interface Winner {
     synced_at: string;
     name:string;
     payed:boolean;
+    type:string;
     symbol: string;
 }
 

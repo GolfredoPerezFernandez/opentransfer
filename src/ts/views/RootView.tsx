@@ -24,6 +24,7 @@ import TopBarStack from './TopBarStack';
 import ViewTodoPanel from './ViewTodoPanel';
 
 import ViewTodoPanel2 from './ViewTodoPanel2';
+import HomePanel from './HomePanel';
 interface RootViewProps extends RX.CommonProps {
     onLayout?: (e: RX.Types.ViewOnLayoutEvent) => void;
 }
@@ -129,7 +130,10 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
                     return 'Owner Details';
 
                 case NavModels.NavViewId.ViewTodo2:
-                    return 'WInner Details';
+                    return 'Winner Details';
+
+                case NavModels.NavViewId.ViewTodo2:
+                    return 'Home';
 
                 default:
                     assert.fail('Unknown view');
@@ -193,7 +197,7 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
                 return <ViewTodoPanel2 todoId={viewContext2.todoId} />;
 
             default:
-                return undefined;
+                return <HomePanel />;
         }
     }
 

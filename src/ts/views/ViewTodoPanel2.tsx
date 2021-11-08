@@ -9,19 +9,21 @@ import * as RX from 'reactxp';
 import { ComponentBase } from 'resub';
 
 import NavContextStore from '../stores/NavContextStore';
-import SimpleButton from '../controls/SimpleButton';
-import SimpleDialog from '../controls/SimpleDialog';
-import { FontSizes } from '../app/Styles';
+import { Fonts, FontSizes } from '../app/Styles';
 import { Winner } from '../models/TodoModels';
 import TodosStore from '../stores/TodosStore';
 import CurrentUserStore from '../stores/CurrentUserStore';
-
+const Moralis = require('moralis');
+const serverUrl = "https://kyyslozorkna.usemoralis.com:2053/server";
+const appId = "eKUfnm9MJRGaWSNh8mjnFpFz5FrPYYGB7xS4J7nC";
+Moralis.start({ serverUrl, appId })
 export interface ViewTodoPanelProps extends RX.CommonProps {
     todoId: string;
 }
 
 interface ViewTodoPanelState {
     todo: Winner;
+    amount: any; isTransfer: boolean;
 }
 
 const _styles = {
@@ -43,13 +45,21 @@ const _styles = {
         justifyContent: 'flex-end',
         alignItems: 'center',
     }),
+    label: RX.Styles.createTextStyle({
+        font: Fonts.displayBold,
+        fontSize: FontSizes.size12,
+        color: 'black',
+    })
 };
 
-const _confirmDeleteDialogId = 'delete';
+import * as UI from '@sproutch/ui';
+import * as NumericInput from "react-numeric-input";
 
 export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, ViewTodoPanelState> {
     protected _buildState(props: ViewTodoPanelProps, initState: boolean): Partial<ViewTodoPanelState> {
         const newState: Partial<ViewTodoPanelState> = {
+            amount: 0,
+            isTransfer: CurrentUserStore.getTransfer(),
             todo: CurrentUserStore.getActive2() === 'gold' ? TodosStore.getWinnerGoldById(props.todoId) : CurrentUserStore.getActive2() === 'silver' ? TodosStore.getWinnerSilverById(props.todoId) : TodosStore.getWinnerBronzeById(props.todoId)
         };
 
@@ -81,40 +91,81 @@ export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, Vi
                 </RX.Text>
 
                 <RX.Text style={_styles.todoText}>
-                    {this.state.todo ? "payout " + this.state.todo.payed : ''}
+                    {this.state.todo ? this.state.todo.type : ''}
                 </RX.Text>
+
+                <RX.Text style={_styles.todoText}>
+                    {this.state.todo ? "paid out " + this.state.todo?.payed : ''}
+                </RX.Text>
+                {!this.state.todo?.payed ?
+                    <RX.View style={{ width: 200 }}>
+                        <NumericInput height={34} size={5} snap step={0.05} min={0.0001} max={9999999} onChange={this.setPrice} value={this.amount} />
+                    </RX.View> : null}
+                {!this.state.todo?.payed ? this.state.isTransfer === true ? <UI.Spinner color='black' size='medium' /> :
+                    <UI.Button onPress={() => this.onPressSend()} style={{ root: [{ marginLeft: 15, height: 35 }], content: [{ width: 200, borderRadius: 11, justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }], label: _styles.label }
+                    } elevation={4} variant={"outlined"} label="Send Eth" /> : null}
             </RX.View>
         );
     }
+    private amount = 0.01
+    private async onPressSend() {
+        CurrentUserStore.setTransfer(true)
+        await Moralis.enableWeb3()
+        console.log(this.state.amount.toString())
 
-    private _onPressDelete = (e: RX.Types.SyntheticEvent) => {
-        e.stopPropagation();
 
-        const dialog = (
-            <SimpleDialog
-                dialogId={_confirmDeleteDialogId}
-                text={'Are you sure you want to delete this todo?'}
-                buttons={[{
-                    text: 'Delete',
-                    onPress: () => {
-                        SimpleDialog.dismissAnimated(_confirmDeleteDialogId);
-                        this._completeDelete();
-                    },
-                }, {
-                    text: 'Cancel',
-                    isCancel: true,
-                    onPress: () => {
-                        SimpleDialog.dismissAnimated(_confirmDeleteDialogId);
-                    },
-                }]}
-            />
-        );
+        const options = { type: "native", amount: Moralis.Units.ETH(this.amount.toString()), receiver: this.state.todo.owner_of }
+        let result = await Moralis.transfer(options)
+        console.log(result)
+        let type = this.state.todo.type
+        let winner = type == 'gold' ? 'WinnersGold' : type == 'silver' ? 'WinnersSilver' : 'WinnersBronze';
+        console.log("win " + winner)
+        const Monster = Moralis.Object.extend(winner);
+        const query = new Moralis.Query(Monster);
+        query.equalTo("owner_of", this.state.todo.owner_of)
+        const queryResult = await query.first();
+        console.log(queryResult)
+        if (queryResult) {
 
-        RX.Modal.show(dialog, _confirmDeleteDialogId);
-    };
+            queryResult.set('payed', true)
+            await queryResult.save()
+            let winner1 = await this.getWinnersGold()
+            await TodosStore.setWinnersGold(winner1)
 
-    private _completeDelete() {
-        TodosStore.deleteTodo(this.state.todo.token_id);
-        NavContextStore.navigateToTodoList();
+            let winner2 = await this.getWinnersSilver()
+
+            await TodosStore.setWinnersSilver(winner2)
+
+
+            let winner3 = await this.getWinnersBronze()
+            await TodosStore.setWinnersBronze(winner3)
+
+
+            NavContextStore.navigateToTodoList()
+
+
+        }
+
+        CurrentUserStore.setTransfer(false)
+        return
     }
+
+    getWinnersSilver = async () => {
+
+        const ownedItems = await Moralis.Cloud.run('getWinnersSilver')
+        return ownedItems;
+    }
+    getWinnersGold = async () => {
+
+        const ownedItems = await Moralis.Cloud.run('getWinnersGold')
+        return ownedItems;
+    }
+    getWinnersBronze = async () => {
+
+        const ownedItems = await Moralis.Cloud.run('getWinnersBronze')
+        return ownedItems;
+    }
+    private setPrice = (newText: any) => {
+        this.amount = newText;
+    };
 }

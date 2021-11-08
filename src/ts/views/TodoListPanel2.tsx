@@ -11,10 +11,9 @@ import { VirtualListView, VirtualListViewItemInfo } from 'reactxp-virtuallistvie
 import { VirtualListCellRenderDetails } from 'reactxp-virtuallistview/dist/VirtualListCell';
 import { ComponentBase } from 'resub';
 
-import HoverButton from '../controls/HoverButton';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
 
-import { Owner, Transfer, Winner } from '../models/TodoModels';
+import { Winner } from '../models/TodoModels';
 import TodosStore from '../stores/TodosStore';
 
 import TodoListItem2 from './TodoListItem2';
@@ -109,6 +108,7 @@ Moralis.start({ serverUrl, appId })
 import * as UI from '@sproutch/ui';
 
 import * as abi from './abi';
+import NavContextStore from '../stores/NavContextStore';
 const RANDOM_CONTRACT_ADDRESS = '0x17275DcC4C5b27dA7E7888A304D219e1f9b4B6E0'
 
 export default class TodoListPanel2 extends ComponentBase<TodoListPanelProps, TodoListPanelState> {
@@ -199,23 +199,19 @@ export default class TodoListPanel2 extends ComponentBase<TodoListPanelProps, To
 
     async goToGold() {
 
+        NavContextStore.navigateToTodoList()
         CurrentUserStore.setActive2('gold')
     }
     async goToSilver() {
 
+        NavContextStore.navigateToTodoList()
         CurrentUserStore.setActive2('silver')
     }
     async goToBronze() {
 
+        NavContextStore.navigateToTodoList()
         CurrentUserStore.setActive2('bronze')
     }
-    private _onRenderAddTodoButton3 = (isHovering: boolean) => (
-        <RX.View style={_styles.addTodoButton}>
-            <RX.Text style={[_styles.buttonText, isHovering ? _styles.buttonTextHover : undefined]}>
-                {'Get Winner'}
-            </RX.Text>
-        </RX.View>
-    );
     private _filterTodoList(sortedTodos: TodoListItemInfo[], searchString: string): TodoListItemInfo[] {
         const lowerSearchString = searchString.toLowerCase();
 
@@ -246,16 +242,4 @@ export default class TodoListPanel2 extends ComponentBase<TodoListPanelProps, To
         });
     };
 
-    private _onPressCreateNewTodo3 = async () => {
-        let user = await Moralis.User.current();
-
-        if (user) {
-            console.log('entro')
-            const userAddress = user.get('ethAddress')
-            const web3 = await Moralis.Web3.enable();
-            const contract = await new web3.eth.Contract(abi.tokenContractAbi, RANDOM_CONTRACT_ADDRESS)
-            const randomNumber = await contract.methods.getRandomNumber(199).call({ from: userAddress })
-            console.log(randomNumber)
-        }
-    };
 }

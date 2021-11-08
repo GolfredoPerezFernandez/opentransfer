@@ -9,8 +9,6 @@ import { DbProvider, DbSchema } from 'nosqlprovider';
 import * as SyncTasks from 'synctasks';
 
 import * as TodoModels from '../models/TodoModels';
-import TodosStore from '../stores/TodosStore';
-
 // The actual value is just a string, but the type system can extract this extra info.
 type DBStore<Name extends string, ObjectType, KeyFormat> = string & { name?: Name; objectType?: ObjectType; keyFormat?: KeyFormat };
 type DBIndex<Store extends DBStore<string, any, any>, IndexKeyFormat> = string & { store?: Store; indexKeyFormat?: IndexKeyFormat };

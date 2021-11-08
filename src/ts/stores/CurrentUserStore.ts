@@ -14,6 +14,7 @@ import { UserMoralis } from '../models/IdentityModels';
 export class CurrentUserStore extends StoreBase {
     // TODO - properly initialize
   private loading=false
+  private isLogin=false
   private random=0
     private _userMoralis: UserMoralis = {
         createdAt: '',
@@ -25,6 +26,28 @@ export class CurrentUserStore extends StoreBase {
         objectId:'',
         avatar:'',
         ethAddress:''
+    }
+    private transfer=false
+    @autoSubscribe
+    getTransfer(): boolean {
+        return this.transfer
+    }
+    
+    setTransfer(isMarket:boolean) { 
+ 
+        this.transfer = isMarket
+        this.trigger()
+    }
+    private _cargando=false
+    @autoSubscribe
+    getCargando(): boolean {
+        return this._cargando
+    }
+    
+    setCargando(isMarket:boolean) { 
+ 
+        this._cargando = isMarket
+        this.trigger()
     }
     setUser(username:string,email:string,createdAt:string,sessionToken:string,updatedAt:string,avatar:string,ethAddress:string) { 
        
@@ -44,7 +67,15 @@ export class CurrentUserStore extends StoreBase {
     }
     private _wallet: string = ''
     private totalBuyers: number = 0
+    @autoSubscribe
+    getLogin() {
 
+        return this.isLogin
+    }
+    setLogin(password: boolean) {
+        this.isLogin = password
+        this.trigger()
+    }
     private activeId2: string = 'gold'
     @autoSubscribe
     getActive2() {
@@ -117,22 +148,11 @@ export class CurrentUserStore extends StoreBase {
         this._isMetamask = isMarket
         this.trigger()
     }
-    private _isLogin: boolean = false
-    @autoSubscribe
-    getLogin(): boolean {
-        return this._isLogin
-    }
-    
     @autoSubscribe
     getMetamask(): boolean {
         return this._isMetamask
     }
 
-    setLogin(user: boolean) {
-        this._isLogin = user
-        this.trigger();
-
-    }
     @autoSubscribe
     getUser(): UserMoralis {
         return this._userMoralis
