@@ -7,6 +7,8 @@
 
 import * as RX from 'reactxp';
 import { FontSizes, Styles } from '../app/Styles';
+import CurrentUserStore from '../stores/CurrentUserStore';
+import NavContextStore from '../stores/NavContextStore';
 import { CreateTodoHook } from './CreateTodoHook';
 
 interface CreateTodoPanelProps extends RX.CommonProps {
@@ -14,6 +16,7 @@ interface CreateTodoPanelProps extends RX.CommonProps {
 
 interface CreateTodoPanelState {
     todoText?: string;
+    isLogin: boolean;
 }
 
 const _styles = {
@@ -39,7 +42,19 @@ const _styles = {
 };
 
 export default class CreateTodoPanel extends RX.Component<CreateTodoPanelProps, CreateTodoPanelState> {
+    protected _buildState(props: CreateTodoPanelProps, initState: boolean): Partial<CreateTodoPanelState> {
+        const partialState: Partial<CreateTodoPanelState> = {
+            isLogin: CurrentUserStore.getLogin()
+        };
+        return partialState;
+    }
+    componentDidMount() {
+        if (this.state.isLogin === true) {
 
+        } else {
+            NavContextStore.navigateToTodoList(undefined, false, undefined, true)
+        }
+    }
     render() {
         return (
             <RX.View useSafeInsets={true} style={[_styles.container, Styles.statusBarTopMargin]}>

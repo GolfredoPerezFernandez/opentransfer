@@ -15,6 +15,7 @@ import { Owner, Todo, Transfer, Winner } from '../models/TodoModels';
 class TodosStore extends StoreBase {
     private _todos: Todo[] = [];
 
+    private _isWinners: boolean = false;
     private _owners: Owner[] = [];
     private _transfers: Transfer[] = [];
     private _winners: Winner[] = [];
@@ -73,6 +74,19 @@ class TodosStore extends StoreBase {
 
         this.trigger()
         return this._ownersDBBronze;
+    }
+    @autoSubscribe
+    setIsWinners(newTodos: boolean) {
+
+        this._isWinners = newTodos
+
+        this.trigger()
+        return this._isWinners;
+    }
+
+    @autoSubscribe
+    getIsWinners() {
+        return this._isWinners;
     }
 
     @autoSubscribe

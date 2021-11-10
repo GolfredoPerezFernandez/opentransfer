@@ -107,10 +107,7 @@ Moralis.start({ serverUrl, appId })
 
 import * as UI from '@sproutch/ui';
 
-import * as abi from './abi';
 import NavContextStore from '../stores/NavContextStore';
-const RANDOM_CONTRACT_ADDRESS = '0x17275DcC4C5b27dA7E7888A304D219e1f9b4B6E0'
-
 export default class TodoListPanel2 extends ComponentBase<TodoListPanelProps, TodoListPanelState> {
     protected _buildState(props: TodoListPanelProps, initState: boolean): Partial<TodoListPanelState> | undefined {
         const partialState: Partial<TodoListPanelState> = {

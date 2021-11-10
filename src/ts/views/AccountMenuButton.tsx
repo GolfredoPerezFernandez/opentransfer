@@ -55,7 +55,7 @@ export default class AccountMenuButton extends ComponentBase<RX.CommonProps, Acc
 
     protected _buildState(props: RX.CommonProps, initState: boolean): Partial<AccountMenuButtonState> | undefined {
         const partialState: Partial<AccountMenuButtonState> = {
-            currentUserName: CurrentUserStore.getFullName(),
+            currentUserName: CurrentUserStore.getActive(),
         };
 
         return partialState;
@@ -64,17 +64,17 @@ export default class AccountMenuButton extends ComponentBase<RX.CommonProps, Acc
     render(): JSX.Element | null {
         return (
             <RX.Button
-                ref={ this._onMountButton }
-                style={ _styles.buttonContainer }
-                onPress={ this._onPress }
-                onHoverStart={ () => this.setState({ isHovering: true }) }
-                onHoverEnd={ () => this.setState({ isHovering: false }) }
+                ref={this._onMountButton}
+                style={_styles.buttonContainer}
+                onPress={this._onPress}
+                onHoverStart={() => this.setState({ isHovering: true })}
+                onHoverEnd={() => this.setState({ isHovering: false })}
             >
-                <RX.View style={ [_styles.circleGlyph, this.state.isHovering ? _styles.circleGlyphHover : undefined] }/>
+                <RX.View style={[_styles.circleGlyph, this.state.isHovering ? _styles.circleGlyphHover : undefined]} />
                 <RX.Text
-                    style={ [_styles.nameText, this.state.isHovering ? _styles.nameTextHover : undefined] }
+                    style={[_styles.nameText, this.state.isHovering ? _styles.nameTextHover : undefined]}
                 >
-                    { this.state.currentUserName }
+                    {this.state.currentUserName}
                 </RX.Text>
             </RX.Button>
         );
@@ -104,8 +104,8 @@ export default class AccountMenuButton extends ComponentBase<RX.CommonProps, Acc
 
                 return (
                     <SimpleMenu
-                        menuItems={ items }
-                        onSelectItem={ this._onSelectMenuItem }
+                        menuItems={items}
+                        onSelectItem={this._onSelectMenuItem}
                     />
                 );
             },

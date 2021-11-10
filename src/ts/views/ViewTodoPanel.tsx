@@ -8,20 +8,18 @@
 import * as RX from 'reactxp';
 import { ComponentBase } from 'resub';
 
-import NavContextStore from '../stores/NavContextStore';
-import SimpleButton from '../controls/SimpleButton';
-import SimpleDialog from '../controls/SimpleDialog';
 import { FontSizes } from '../app/Styles';
-import { Owner, Todo, Transfer } from '../models/TodoModels';
 import TodosStore from '../stores/TodosStore';
 import CurrentUserStore from '../stores/CurrentUserStore';
+import NavContextStore from '../stores/NavContextStore';
 
 export interface ViewTodoPanelProps extends RX.CommonProps {
     todoId: string;
 }
 
 interface ViewTodoPanelState {
-    todo: Owner;
+    todo: any;
+    isLogin: boolean;
 }
 
 const _styles = {
@@ -45,15 +43,22 @@ const _styles = {
     }),
 };
 
-const _confirmDeleteDialogId = 'delete';
 
 export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, ViewTodoPanelState> {
     protected _buildState(props: ViewTodoPanelProps, initState: boolean): Partial<ViewTodoPanelState> {
         const newState: Partial<ViewTodoPanelState> = {
+            isLogin: CurrentUserStore.getLogin(),
             todo: CurrentUserStore.getActive() === 'gold' ? TodosStore.getOwnerGoldById(props.todoId) : CurrentUserStore.getActive() === 'silver' ? TodosStore.getOwnerSilverById(props.todoId) : CurrentUserStore.getActive() === 'bronze' ? TodosStore.getOwnerBronzeById(props.todoId) : []
         };
 
         return newState;
+    }
+    componentDidMount() {
+        if (this.state.isLogin === true) {
+
+        } else {
+            NavContextStore.navigateToTodoList(undefined, false, undefined, true)
+        }
     }
 
     render() {
@@ -82,36 +87,5 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
 
             </RX.View>
         );
-    }
-
-    private _onPressDelete = (e: RX.Types.SyntheticEvent) => {
-        e.stopPropagation();
-
-        const dialog = (
-            <SimpleDialog
-                dialogId={_confirmDeleteDialogId}
-                text={'Are you sure you want to delete this todo?'}
-                buttons={[{
-                    text: 'Delete',
-                    onPress: () => {
-                        SimpleDialog.dismissAnimated(_confirmDeleteDialogId);
-                        this._completeDelete();
-                    },
-                }, {
-                    text: 'Cancel',
-                    isCancel: true,
-                    onPress: () => {
-                        SimpleDialog.dismissAnimated(_confirmDeleteDialogId);
-                    },
-                }]}
-            />
-        );
-
-        RX.Modal.show(dialog, _confirmDeleteDialogId);
-    };
-
-    private _completeDelete() {
-        TodosStore.deleteTodo(this.state.todo.token_id);
-        NavContextStore.navigateToTodoList();
     }
 }

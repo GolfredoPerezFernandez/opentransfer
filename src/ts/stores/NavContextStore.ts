@@ -32,7 +32,7 @@ export class NavContextStore extends StoreBase {
 
                 // Force navigation to the top level. This will also trigger
                 // a subscription change event.
-                this.navigateToTodoList();
+                this.navigateToTodoList(undefined,false,undefined,true);
             }
         });
 
@@ -84,8 +84,8 @@ export class NavContextStore extends StoreBase {
         return this._isUsingStackNav;
     }
 
-    navigateToTodoList(selectedTodoId?: string, showNewTodoPanel = false,selectedTodoId2?: string) {
-        this.setNavContext(NavActions.createTodoListContext(this._isUsingStackNav, selectedTodoId, showNewTodoPanel,selectedTodoId2));
+    navigateToTodoList(selectedTodoId?: string, showNewTodoPanel = false,selectedTodoId2?: string,showHomePanel=false) {
+        this.setNavContext(NavActions.createTodoListContext(this._isUsingStackNav, selectedTodoId, showNewTodoPanel,selectedTodoId2,showHomePanel));
     }
 
     popNavigationStack() {

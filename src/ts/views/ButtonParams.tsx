@@ -70,13 +70,12 @@ const _styles = {
 };
 
 import SimpleButtonParams from '../controls/SimpleButtonParams';
-import TodosStore from '../stores/TodosStore';
 export default class ButtonParams extends ComponentBase<AccountMenuButtonProps, AccountMenuButtonState> {
     private _mountedButton: any;
 
     protected _buildState(props: AccountMenuButtonProps, initState: boolean): Partial<AccountMenuButtonState> | undefined {
         const partialState: Partial<AccountMenuButtonState> = {
-            currentUserName: CurrentUserStore.getFullName(),
+            currentUserName: CurrentUserStore.getEthAddress(),
             command: 'Select an type of measurement',
             isTiny: ResponsiveWidthStore.isSmallOrTinyScreenSize(),
         };
@@ -146,7 +145,6 @@ export default class ButtonParams extends ComponentBase<AccountMenuButtonProps, 
         if (this.props.isChanged) {
             this.props.isChanged(command);
         }
-        TodosStore.setType(command);
         RX.Popup.dismiss(_menuPopupId);
         // TODO - need to implement
     };

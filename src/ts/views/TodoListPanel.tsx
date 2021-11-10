@@ -34,13 +34,14 @@ interface TodoListPanelState {
     activeId: string;
     randomNumber: number;
     newBuyers: number;
+    isLogin: boolean;
     tokenAddress: string;
     ownersDBGold: Owner[];
     ownersDBSilver: Owner[];
     ownersDBBronze: Owner[];
     ownersGold: number;
     ownersSilver: number;
-    ownersBronze: number;
+    ownersBronze: number; isTiny: boolean;
     loading: boolean;
 }
 
@@ -104,6 +105,7 @@ const _styles = {
 };
 import * as UI from '@sproutch/ui';
 import CurrentUserStore from '../stores/CurrentUserStore';
+import NavContextStore from '../stores/NavContextStore';
 
 const Moralis = require('moralis');
 const serverUrl = "https://kyyslozorkna.usemoralis.com:2053/server";
@@ -115,6 +117,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
     protected _buildState(props: TodoListPanelProps, initState: boolean): Partial<TodoListPanelState> | undefined {
         const partialState: Partial<TodoListPanelState> = {
             tokenAddress: '',
+            isLogin: CurrentUserStore.getLogin(),
             ownersGold: TodosStore.getOwnersGold().length,
             ownersSilver: TodosStore.getOwnersSilver().length,
             ownersBronze: TodosStore.getOwnersBronze().length,
@@ -124,6 +127,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
             activeId: CurrentUserStore.getActive(),
             newBuyers: CurrentUserStore.getTotalBuyers(),
             loading: CurrentUserStore.getLoading(),
+            isTiny: NavContextStore.isUsingStackNav(),
             randomNumber: CurrentUserStore.getRandomNumber(),
         };
 
@@ -157,6 +161,13 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
         }
 
         return partialState;
+    }
+    componentDidMount() {
+        if (this.state.isLogin === true) {
+
+        } else {
+            NavContextStore.navigateToTodoList(undefined, false, undefined, true)
+        }
     }
     render() {
         return (
@@ -342,6 +353,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                             synced_at: tokenIdOwnersGold.result[win].synced_at,
                             name: tokenIdOwnersGold.result[win].name,
                             payed: false,
+                            ethscan: '',
                             type: 'bronze',
                             symbol: tokenIdOwnersGold.result[win].symbol,
                         })
@@ -360,6 +372,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                             name: tokenIdOwnersGold.result[win].name,
                             payed: false,
                             type: 'bronze',
+                            ethscan: '',
                             symbol: tokenIdOwnersGold.result[win].symbol,
                         });
                         counter = counter + 10
@@ -467,6 +480,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                             synced_at: tokenIdOwnersGold.result[win].synced_at,
                             name: tokenIdOwnersGold.result[win].name,
                             payed: false,
+                            ethscan: '',
                             type: 'silver',
                             symbol: tokenIdOwnersGold.result[win].symbol,
                         })
@@ -484,6 +498,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                             synced_at: tokenIdOwnersGold.result[win].synced_at,
                             name: tokenIdOwnersGold.result[win].name,
                             payed: false,
+                            ethscan: '',
                             symbol: tokenIdOwnersGold.result[win].symbol,
                             type: 'silver'
                         });
@@ -595,6 +610,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                             synced_at: tokenIdOwnersGold.result[win].synced_at,
                             name: tokenIdOwnersGold.result[win].name,
                             payed: false,
+                            ethscan: '',
                             type: 'gold',
                             symbol: tokenIdOwnersGold.result[win].symbol,
                         })
@@ -612,6 +628,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                             synced_at: tokenIdOwnersGold.result[win].synced_at,
                             name: tokenIdOwnersGold.result[win].name,
                             payed: false,
+                            ethscan: '',
                             type: 'gold',
                             symbol: tokenIdOwnersGold.result[win].symbol,
                         });

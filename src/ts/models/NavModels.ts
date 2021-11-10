@@ -22,7 +22,8 @@ export enum NavViewId {
     TodoList,
     NewTodo,
     ViewTodo,
-    ViewTodo2
+    ViewTodo2,
+    Home,
 }
 
 // ----------------------------------------
@@ -61,14 +62,14 @@ export class StackRootNavContext extends RootNavContext {
 export class TodoRootNavContext extends CompositeRootNavContext {
     todoList: TodoListViewNavContext;
 
-    constructor(selectedTodoId?: string, public showNewTodoPanel = false,selectedTodoId2?: string, ) {
+    constructor(selectedTodoId?: string, public showNewTodoPanel = false,selectedTodoId2?: string,public showHomePanel =false ) {
         super(NavViewId.TodoComposite);
         this.todoList = new TodoListViewNavContext(selectedTodoId,selectedTodoId2);
         
     }
 
     clone(): TodoRootNavContext {
-        return new TodoRootNavContext(this.todoList.selectedTodoId, this.showNewTodoPanel,this.todoList.selectedTodoId2);
+        return new TodoRootNavContext(this.todoList.selectedTodoId, this.showNewTodoPanel,this.todoList.selectedTodoId2,this.showHomePanel);
     }
 }
 
@@ -93,6 +94,15 @@ export class TodoListViewNavContext extends ViewNavContext {
     }
 }
 
+export class HomeViewNavContext extends ViewNavContext {
+    constructor() {
+        super(NavViewId.Home);
+    }
+
+    clone(): HomeViewNavContext {
+        return new HomeViewNavContext();
+    }
+}
 export class NewTodoViewNavContext extends ViewNavContext {
     constructor() {
         super(NavViewId.NewTodo);

@@ -80,7 +80,6 @@ import * as RX from 'reactxp';
 
 import { useMoralis } from 'react-moralis'
 import { useEffect, useMemo, useState } from 'react';
-import SimpleButton from '../controls/SimpleButton';
 
 import { BsFillCollectionFill } from "@react-icons/all-files/bs/BsFillCollectionFill";
 
@@ -101,7 +100,6 @@ export const CreateTodoHook = ({
     Moralis,
     user,
     isInitialized,
-    logout,
     authenticate,
     enableWeb3,
     isAuthenticated,

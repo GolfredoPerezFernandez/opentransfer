@@ -23,6 +23,7 @@ export interface ViewTodoPanelProps extends RX.CommonProps {
 
 interface ViewTodoPanelState {
     todo: Winner;
+    isLogin: boolean;
     amount: any; isTransfer: boolean;
 }
 
@@ -59,6 +60,8 @@ export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, Vi
     protected _buildState(props: ViewTodoPanelProps, initState: boolean): Partial<ViewTodoPanelState> {
         const newState: Partial<ViewTodoPanelState> = {
             amount: 0,
+            isLogin: CurrentUserStore.getLogin(),
+
             isTransfer: CurrentUserStore.getTransfer(),
             todo: CurrentUserStore.getActive2() === 'gold' ? TodosStore.getWinnerGoldById(props.todoId) : CurrentUserStore.getActive2() === 'silver' ? TodosStore.getWinnerSilverById(props.todoId) : TodosStore.getWinnerBronzeById(props.todoId)
         };
@@ -66,6 +69,13 @@ export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, Vi
         return newState;
     }
 
+    componentDidMount() {
+        if (this.state.isLogin === true) {
+
+        } else {
+            NavContextStore.navigateToTodoList(undefined, false, undefined, true)
+        }
+    }
     render() {
         return (
             <RX.View useSafeInsets={true} style={_styles.container}>
@@ -104,6 +114,11 @@ export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, Vi
                 {!this.state.todo?.payed ? this.state.isTransfer === true ? <UI.Spinner color='black' size='medium' /> :
                     <UI.Button onPress={() => this.onPressSend()} style={{ root: [{ marginLeft: 15, height: 35 }], content: [{ width: 200, borderRadius: 11, justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }], label: _styles.label }
                     } elevation={4} variant={"outlined"} label="Send Eth" /> : null}
+                {this.state.todo?.payed ?
+                    <RX.View style={{ width: 200 }}>
+                        <UI.Button onPress={() => this.onScan()} style={{ root: [{ marginLeft: 15, height: 35 }], content: [{ width: 150, borderRadius: 11, justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }], label: _styles.label }
+                        } elevation={4} variant={"outlined"} label="See in Ethscan" />
+                    </RX.View> : null}
             </RX.View>
         );
     }
@@ -116,18 +131,20 @@ export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, Vi
 
         const options = { type: "native", amount: Moralis.Units.ETH(this.amount.toString()), receiver: this.state.todo.owner_of }
         let result = await Moralis.transfer(options)
-        console.log(result)
+        console.log(JSON.stringify(result))
         let type = this.state.todo.type
         let winner = type == 'gold' ? 'WinnersGold' : type == 'silver' ? 'WinnersSilver' : 'WinnersBronze';
-        console.log("win " + winner)
+
         const Monster = Moralis.Object.extend(winner);
         const query = new Moralis.Query(Monster);
         query.equalTo("owner_of", this.state.todo.owner_of)
         const queryResult = await query.first();
         console.log(queryResult)
+        console.log(JSON.stringify("hash" + result.transactionHash))
         if (queryResult) {
 
             queryResult.set('payed', true)
+            queryResult.set('ethscan', "https://rinkeby.etherscan.io/tx/" + result.transactionHash)
             await queryResult.save()
             let winner1 = await this.getWinnersGold()
             await TodosStore.setWinnersGold(winner1)
@@ -147,6 +164,21 @@ export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, Vi
         }
 
         CurrentUserStore.setTransfer(false)
+        return
+    }
+
+    private async onScan() {
+        let type = this.state.todo.type
+        let winner = type == 'gold' ? 'WinnersGold' : type == 'silver' ? 'WinnersSilver' : 'WinnersBronze';
+
+        const Monster = Moralis.Object.extend(winner);
+        const query = new Moralis.Query(Monster);
+        query.equalTo("owner_of", this.state.todo.owner_of)
+
+        const queryResult = await query.first();
+        console.log(this.state.todo.ethscan)
+        RX.Linking.openUrl(queryResult.get('ethscan'));
+
         return
     }
 

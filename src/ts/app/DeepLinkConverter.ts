@@ -34,6 +34,9 @@ export default class DeepLinkConverter {
             }else if (topViewContext instanceof NavModels.NewTodoViewNavContext) {
                 url += '/owners?selected=new';
                 return url;
+            }else if (topViewContext instanceof NavModels.HomeViewNavContext) {
+                url = '/';
+                return url;
             }
         } else {
             const compositeContext = context as NavModels.CompositeRootNavContext;
@@ -46,6 +49,8 @@ export default class DeepLinkConverter {
                     url += '?owners=' + encodeURIComponent(todoListContext.todoList.selectedTodoId);
                 }else if (todoListContext.todoList.selectedTodoId2) {
                     url += '?winners=' + encodeURIComponent(todoListContext.todoList.selectedTodoId2);
+                }else if (todoListContext.showNewTodoPanel) {
+                    url = '';
                 }
                 return url;
             } else {
@@ -93,7 +98,11 @@ export default class DeepLinkConverter {
                     }
     
                     return NavActions.createTodoListContext(isStackNav, undefined, showNewPanel2,selectedTodoId2);
-    
+             case '':
+                       
+        
+                        return NavActions.createTodoListContext(isStackNav, undefined, false,undefined,true);
+        
             default:
                 return undefined;
         }

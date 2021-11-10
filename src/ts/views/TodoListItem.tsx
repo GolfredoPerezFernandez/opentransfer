@@ -5,7 +5,6 @@
 * Renders a list item that represents a todo item.
 */
 
-import ImageSource from 'modules/images';
 import * as RX from 'reactxp';
 import { ComponentBase } from 'resub';
 
@@ -126,7 +125,7 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
         return (
             <RX.View style={buttonStyles}>
                 <RX.Text style={_styles.todoNameText} numberOfLines={1}>
-                    {this.props.todo.owner_of}
+                    {nameText}
                 </RX.Text>
 
             </RX.View>

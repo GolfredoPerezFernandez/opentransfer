@@ -58,6 +58,7 @@ export interface Winner {
     metadata:any;
     synced_at: string;
     name:string;
+    ethscan:string;
     payed:boolean;
     type:string;
     symbol: string;

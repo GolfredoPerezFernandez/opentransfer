@@ -65,7 +65,7 @@ const _styles = {
 import * as RX from 'reactxp';
 
 import { useMoralis } from 'react-moralis'
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import SimpleButton from '../controls/SimpleButton';
 
 import * as NumericInput from "react-numeric-input";
@@ -81,9 +81,7 @@ export const CreateTodoHook = ({
 
   const {
     Moralis,
-    user,
     isInitialized,
-    logout,
     authenticate,
     enableWeb3,
     isAuthenticated,
@@ -105,8 +103,6 @@ export const CreateTodoHook = ({
       authenticate()
     }
   }, [isAuthenticated])
-  const web3Account = useMemo(() => isAuthenticated && user?.get("accounts")[0],
-    [user, isAuthenticated])
 
   const getAsset = async () => {
     console.log('nftTokenAddress ' + nftTokenAddress)

@@ -16,7 +16,7 @@ import { Colors, Fonts, FontSizes, } from '../app/Styles';
 const _styles = {
     background: RX.Styles.createViewStyle({
         height: 75,
-        width: 300,
+        width: 150,
         borderBottomWidth: 1,
         alignSelf: 'center',
         alignItems: 'center',
@@ -158,7 +158,7 @@ export default class AccountMenuButton2 extends ComponentBase<AccountMenuButtonP
 
 
             default:
-                return NavContextStore.navigateToTodoList(undefined, false, true)
+                return NavContextStore.navigateToTodoList(undefined, false, undefined, true)
         }
 
         // TODO - need to implement

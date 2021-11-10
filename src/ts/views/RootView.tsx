@@ -25,12 +25,14 @@ import ViewTodoPanel from './ViewTodoPanel';
 
 import ViewTodoPanel2 from './ViewTodoPanel2';
 import HomePanel from './HomePanel';
+import TodosStore from '../stores/TodosStore';
+import TodoListPanel2 from './TodoListPanel2';
 interface RootViewProps extends RX.CommonProps {
     onLayout?: (e: RX.Types.ViewOnLayoutEvent) => void;
 }
 
 interface RootViewState {
-    viewTitle: string;
+    viewTitle: string; isWinners: boolean;
     navContext: NavModels.RootNavContext;
 }
 
@@ -54,6 +56,7 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
 
         const partialState: Partial<RootViewState> = {
             viewTitle: this._getViewTitle(newNavContext),
+            isWinners: TodosStore.getIsWinners(),
             navContext: newNavContext,
         };
 
@@ -121,7 +124,7 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
 
             switch (topViewId) {
                 case NavModels.NavViewId.TodoList:
-                    return 'Todo List';
+                    return 'Dashboard';
 
                 case NavModels.NavViewId.NewTodo:
                     return 'New Todo';
@@ -132,7 +135,7 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
                 case NavModels.NavViewId.ViewTodo2:
                     return 'Winner Details';
 
-                case NavModels.NavViewId.ViewTodo2:
+                case NavModels.NavViewId.Home:
                     return 'Home';
 
                 default:
@@ -173,14 +176,22 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
         switch (viewId) {
             case NavModels.NavViewId.TodoList:
                 return (
-                    <TodoListPanel
-                        onSelect={this._onSelectTodoFromList}
-                        onCreateNew={this._onCreateNewTodo}
-                    />
+                    <RX.View>
+                        {this.state.isWinners ? <TodoListPanel2
+                            onSelect={this._onSelectTodoFromList}
+                            onCreateNew={this._onCreateNewTodo}
+                        /> : <TodoListPanel
+                            onSelect={this._onSelectTodoFromList}
+                            onCreateNew={this._onCreateNewTodo}
+                        />}
+
+                    </RX.View>
                 );
 
             case NavModels.NavViewId.NewTodo:
                 return <CreateTodoPanel />;
+            case NavModels.NavViewId.Home:
+                return <HomePanel />;
 
             case NavModels.NavViewId.ViewTodo:
                 const viewContext = this._findNavContextForRoute(viewId) as NavModels.ViewTodoViewNavContext;
