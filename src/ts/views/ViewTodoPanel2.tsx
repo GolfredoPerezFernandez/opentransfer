@@ -107,7 +107,7 @@ export default class ViewTodoPanel2 extends ComponentBase<ViewTodoPanelProps, Vi
                 <RX.Text style={_styles.todoText}>
                     {this.state.todo ? "paid out " + this.state.todo?.payed : ''}
                 </RX.Text>
-                {!this.state.todo?.payed ?
+                {!this.state.todo.payed ?
                     <RX.View style={{ width: 200 }}>
                         <NumericInput height={34} size={5} snap step={0.05} min={0.0001} max={9999999} onChange={this.setPrice} value={this.amount} />
                     </RX.View> : null}

@@ -11,6 +11,8 @@ import { ComponentBase } from 'resub';
 import HoverButton from '../controls/HoverButton';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
 import { Owner, } from '../models/TodoModels';
+import TodosStore from '../stores/TodosStore';
+import NavContextStore from '../stores/NavContextStore';
 
 interface TodoListItemProps extends RX.CommonProps {
     height: number;
@@ -21,6 +23,7 @@ interface TodoListItemProps extends RX.CommonProps {
 }
 
 interface TodoListItemState {
+    isWinners: boolean;
     heightStyle: RX.Types.ViewStyleRuleSet;
 }
 
@@ -64,6 +67,7 @@ const _styles = {
 export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoListItemState> {
     protected _buildState(props: TodoListItemProps, initState: boolean): Partial<TodoListItemState> | undefined {
         const partialState: Partial<TodoListItemState> = {
+            isWinners: TodosStore.getIsWinners(),
             heightStyle: RX.Styles.createViewStyle({
                 height: props.height,
             }, false),
@@ -83,6 +87,13 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
         // Prevent VirtualListView.onItemSelected from
         // being triggering in the web app.
         e.stopPropagation();
+        console.log("desde onwer");
+        if (this.state.isWinners === true) {
+            NavContextStore.navigateToTodoList(undefined, false, this.props.todo.owner_of, false)
+
+        } else {
+            NavContextStore.navigateToTodoList(this.props.todo.owner_of, false, undefined, false)
+        }
         this.props.onPress(this.props.todo.owner_of);
     };
 

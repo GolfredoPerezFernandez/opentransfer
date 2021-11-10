@@ -61,11 +61,13 @@ export class StackRootNavContext extends RootNavContext {
 
 export class TodoRootNavContext extends CompositeRootNavContext {
     todoList: TodoListViewNavContext;
+    todoList2: TodoListViewNavContext2;
 
     constructor(selectedTodoId?: string, public showNewTodoPanel = false,selectedTodoId2?: string,public showHomePanel =false ) {
         super(NavViewId.TodoComposite);
         this.todoList = new TodoListViewNavContext(selectedTodoId,selectedTodoId2);
-        
+        this.todoList2 = new TodoListViewNavContext2(selectedTodoId,selectedTodoId2);
+
     }
 
     clone(): TodoRootNavContext {
@@ -91,6 +93,16 @@ export class TodoListViewNavContext extends ViewNavContext {
 
     clone(): TodoListViewNavContext {
         return new TodoListViewNavContext(this.selectedTodoId,this.selectedTodoId2);
+    }
+}
+
+export class TodoListViewNavContext2 extends ViewNavContext {
+    constructor(public selectedTodoId?: string,public selectedTodoId2?: string) {
+        super(NavViewId.TodoList);
+    }
+
+    clone(): TodoListViewNavContext2 {
+        return new TodoListViewNavContext2(this.selectedTodoId,this.selectedTodoId2);
     }
 }
 

@@ -696,7 +696,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
         return ownedItems;
     }
     private _onPressCreateNewTodo = async () => {
-
+        CurrentUserStore.setLogin(true)
         this.props.onCreateNew();
         this.setState({
             searchString: '',

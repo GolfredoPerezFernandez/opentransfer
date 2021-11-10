@@ -224,7 +224,7 @@ export default class TodoListPanel2 extends ComponentBase<TodoListPanelProps, To
             <TodoListItem2
                 todo={item.todo}
                 height={_listItemHeight}
-                isSelected={item.todo.token_id === this.props.selectedTodoId}
+                isSelected={item.todo.owner_of === this.props.selectedTodoId}
                 searchString={this.state.searchString}
                 onPress={this._onPressTodo}
             />
@@ -233,6 +233,7 @@ export default class TodoListPanel2 extends ComponentBase<TodoListPanelProps, To
 
     private _onPressTodo = (todoId: string) => {
         this.props.onSelect(todoId);
+        console.log('todoId')
         this.setState({
             searchString: '',
             filteredTodoList: this.state.todos,

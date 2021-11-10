@@ -11,13 +11,13 @@ export default class NavActions {
     static createTodoListContext(useStackNav: boolean, selectedTodoId?: string, showNewTodoPanel = false, selectedTodoId2?: string,showHomePanel=false) {
         if (useStackNav) {
             const navContext = new NavModels.StackRootNavContext();
-            navContext.stack.push(new NavModels.TodoListViewNavContext(selectedTodoId));
+            navContext.stack.push(new NavModels.TodoListViewNavContext(selectedTodoId,selectedTodoId2));
             if (showNewTodoPanel) {
                 navContext.stack.push(new NavModels.NewTodoViewNavContext());
             } else if (selectedTodoId !== undefined) {
                 navContext.stack.push(new NavModels.ViewTodoViewNavContext(selectedTodoId));
             }else if (selectedTodoId2 !== undefined) {
-                navContext.stack.push(new NavModels.ViewTodoViewNavContext(selectedTodoId2));
+                navContext.stack.push(new NavModels.ViewTodoViewNavContext2(selectedTodoId2));
             }else if (showHomePanel) {
                 navContext.stack.push(new NavModels.HomeViewNavContext());
             }

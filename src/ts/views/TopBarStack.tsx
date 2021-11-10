@@ -28,7 +28,7 @@ const _styles = {
     leftRightContainer: RX.Styles.createViewStyle({
         flexDirection: 'row',
         alignItems: 'center',
-        width: 200,
+        width: 160,
     }),
     titleContainer: RX.Styles.createViewStyle({
         flex: 1,
@@ -66,6 +66,7 @@ export interface TopBarStackProps extends RX.CommonProps {
 
 interface TopBarCompositeState {
     isLogin: boolean;
+    isWinners: boolean;
     isCargando: boolean;
     user: UserMoralis;
 }
@@ -84,13 +85,19 @@ export default class TopBarStack extends ComponentBase<TopBarStackProps, TopBarC
         const partialState: Partial<TopBarCompositeState> = {
             isLogin: CurrentUserStore.getLogin(),
             user: CurrentUserStore.getUser(),
+            isWinners: TodosStore.getIsWinners(),
             isCargando: CurrentUserStore.getCargando(),
         };
         return partialState;
     }
 
-    private _onPressCreateNewTodo3 = async () => {
+    private _onPressCreateNewTodo4 = async () => {
 
+        TodosStore.setIsWinners(false)
+        NavContextStore.navigateToTodoList()
+    };
+    private _onPressCreateNewTodo3 = async () => {
+        NavContextStore.navigateToTodoList()
         TodosStore.setIsWinners(true)
     };
     _onPressTodo = async (e: RX.Types.SyntheticEvent) => {
@@ -147,12 +154,13 @@ export default class TopBarStack extends ComponentBase<TopBarStackProps, TopBarC
 
         async function onLogOut() {
 
+            TodosStore.setIsWinners(false)
             CurrentUserStore.setLogin(false)
             CurrentUserStore.setUser('', '', '', '', '', '', '')
 
 
             CurrentUserStore.setCargando(false)
-            NavContextStore.navigateToTodoList(undefined, false)
+            NavContextStore.navigateToTodoList(undefined, false, undefined, true)
             await Moralis.User.logOut();
         }
         return (
@@ -160,10 +168,12 @@ export default class TopBarStack extends ComponentBase<TopBarStackProps, TopBarC
                 <RX.View style={_styles.leftRightContainer}>
                     {leftContents}
 
-                    {this.state.isLogin ?
+                    {this.state.isLogin && !this.state.isWinners ?
                         <UI.Button onPress={this._onPressCreateNewTodo3} style={{ root: [{ marginLeft: 20, marginRight: 0 }], content: [{ height: 37, backgroundColor: 'white', width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
                         } elevation={4} variant={"outlined"} label="Winners List" /> : null}
-
+                    {this.state.isWinners ?
+                        <UI.Button onPress={this._onPressCreateNewTodo4} style={{ root: [{ marginLeft: 20, marginRight: 0 }], content: [{ height: 37, backgroundColor: 'white', width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
+                        } elevation={4} variant={"outlined"} label="Owners List" /> : null}
                 </RX.View>
                 <RX.View style={_styles.titleContainer}>
                     <RX.Text style={_styles.titleText} numberOfLines={1}>

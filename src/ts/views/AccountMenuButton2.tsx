@@ -106,8 +106,8 @@ export default class AccountMenuButton2 extends ComponentBase<AccountMenuButtonP
     render(): JSX.Element | null {
         let leng = this.props.username.length
         return (
-            <UI.Button ref={this._onMountButton} onPress={this._onPress} style={{ root: [{}], content: [{ width: 250, justifyContent: 'center', alignItems: 'center', borderRadius: 11, }], label: _styles.label }
-            } elevation={4} variant={"outlined"} label={this.props.username.length > 8 ? this.props.username.substring(0, 10).toUpperCase() + '...' + this.props.username.substring(leng - 5, leng).toUpperCase() : this.props.username} />
+            <UI.Button ref={this._onMountButton} onPress={this._onPress} style={{ root: [{}], content: [{ width: 150, justifyContent: 'center', alignItems: 'center', borderRadius: 11, }], label: _styles.label }
+            } elevation={4} variant={"outlined"} label={this.props.username.length > 8 ? this.props.username.substring(0, 5).toUpperCase() + '...' + this.props.username.substring(leng - 5, leng).toUpperCase() : this.props.username} />
 
 
         );

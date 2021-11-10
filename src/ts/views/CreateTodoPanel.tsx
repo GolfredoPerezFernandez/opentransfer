@@ -48,14 +48,9 @@ export default class CreateTodoPanel extends RX.Component<CreateTodoPanelProps, 
         };
         return partialState;
     }
-    componentDidMount() {
-        if (this.state.isLogin === true) {
-
-        } else {
-            NavContextStore.navigateToTodoList(undefined, false, undefined, true)
-        }
-    }
     render() {
+
+        console.log(this.state.isLogin)
         return (
             <RX.View useSafeInsets={true} style={[_styles.container, Styles.statusBarTopMargin]}>
                 <CreateTodoHook width={0} height={0} isTiny={false} />

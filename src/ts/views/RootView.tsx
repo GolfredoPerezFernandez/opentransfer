@@ -114,7 +114,7 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
 
     private _showBackButton(viewId: NavModels.NavViewId): boolean {
         return viewId !== NavModels.NavViewId.TodoComposite &&
-            viewId !== NavModels.NavViewId.TodoList;
+            viewId !== NavModels.NavViewId.TodoList && viewId !== NavModels.NavViewId.Home;
     }
 
     private _getViewTitle(navContext: NavModels.RootNavContext): string {
@@ -178,7 +178,7 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
                 return (
                     <RX.View>
                         {this.state.isWinners ? <TodoListPanel2
-                            onSelect={this._onSelectTodoFromList}
+                            onSelect={this._onSelectTodoFromList2}
                             onCreateNew={this._onCreateNewTodo}
                         /> : <TodoListPanel
                             onSelect={this._onSelectTodoFromList}
@@ -211,6 +211,10 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
                 return <HomePanel />;
         }
     }
+
+    private _onSelectTodoFromList2 = (selectedId: string) => {
+        NavContextStore.navigateToTodoList(undefined, false, selectedId);
+    };
 
     private _onSelectTodoFromList = (selectedId: string) => {
         NavContextStore.navigateToTodoList(selectedId, false);
